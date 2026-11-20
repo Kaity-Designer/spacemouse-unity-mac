@@ -98,8 +98,25 @@ namespace Kah.SpaceMouse
                 SpaceMouseSettings.ResetMapping();
         }
 
+        static GUIStyle s_DotStyle;
+
+        static void DrawStatusLight()
+        {
+            var level = SpaceMouseStatus.Level(out string label);
+            if (s_DotStyle == null) s_DotStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 14 };
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var old = GUI.contentColor;
+                GUI.contentColor = SpaceMouseStatus.ColorOf(level);
+                GUILayout.Label("●", s_DotStyle, GUILayout.Width(18));
+                GUI.contentColor = old;
+                GUILayout.Label(label, EditorStyles.boldLabel);
+            }
+        }
+
         static void DrawStatus()
         {
+            DrawStatusLight();
             string msg;
             MessageType type;
             if (SpaceMouseNavigator.LibraryMissing)

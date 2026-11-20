@@ -37,6 +37,10 @@ Wireless: the package compiles, loads its native bridge and connects to the
 ## Use
 
 - Hover the mouse over a Scene view and move the cap.
+- A light in the Scene view (and at the top of the panel) shows the status:
+  green = connected, amber = no SpaceMouse found or navigation off,
+  red = 3Dconnexion driver missing. Hide or show it from the Scene view's
+  Overlays menu.
 - **Window > SpaceMouse** opens the panel with speeds, mode and live bars.
   The same settings are under **Unity > Settings > Preferences > SpaceMouse**.
 - Left button: frame the selected object. Right button: switch Fly / Orbit.
