@@ -140,9 +140,11 @@ namespace Kah.SpaceMouse
             float size = view.size;
             float dist = view.cameraDistance;
 
-            float right = Channels[(int)Channel.MoveRight];
-            float up = Channels[(int)Channel.MoveUp];
-            float fwd = Channels[(int)Channel.MoveForward];
+            // Push harder, go disproportionately faster: a light touch stays precise,
+            // a full push covers the whole environment.
+            float right = Boost(Channels[(int)Channel.MoveRight]);
+            float up = Boost(Channels[(int)Channel.MoveUp]);
+            float fwd = Boost(Channels[(int)Channel.MoveForward]);
             float look = Channels[(int)Channel.LookUp];
             float turn = Channels[(int)Channel.TurnRight];
             float roll = SpaceMouseSettings.LockHorizon ? 0f : Channels[(int)Channel.Roll];
@@ -179,9 +181,19 @@ namespace Kah.SpaceMouse
                 camPos += rot * new Vector3(right, up, fwd) * move;
                 rot = Rotate(rot, look * degrees, turn * degrees, roll * degrees);
                 pivot = camPos + rot * Vector3.forward * dist;
+                // An orthographic view has no depth, so pushing forward would
+                // show nothing: zoom instead.
+                if (view.orthographic)
+                    size = Mathf.Max(size * Mathf.Exp(-fwd * 1.5f * SpaceMouseSettings.ZoomSpeed * dt), 0.001f);
                 view.LookAtDirect(pivot, rot, size);
             }
             view.Repaint();
+        }
+
+        static float Boost(float v)
+        {
+            float a = Mathf.Abs(v);
+            return v * (1f + (SpaceMouseSettings.PushBoost - 1f) * a * a);
         }
 
         static Quaternion Rotate(Quaternion rot, float lookUpDeg, float turnRightDeg, float rollDeg)

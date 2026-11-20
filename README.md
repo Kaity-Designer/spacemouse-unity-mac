@@ -47,7 +47,12 @@ Wireless: the package compiles, loads its native bridge and connects to the
 - **Back to original settings** at the bottom of the panel resets everything
   to the defaults. You can also assign it to a puck button.
 
+The harder you push, the faster you go: a light touch is slow and precise,
+a full push flies across a whole level. **Push boost** in the panel sets how
+much faster a full push is (1 = off).
+
 **Fly** (default): you are the camera. Push forward to move forward, twist to turn.
+In an orthographic view, pushing forward zooms instead.
 **Orbit**: you hold the scene. Push and pull to zoom toward the pivot, twist and tilt to turn it.
 
 Settings live in EditorPrefs, so they apply to every project.
