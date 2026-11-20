@@ -1,0 +1,12 @@
+{
+  "name": "com.kah.spacemouse-mac",
+  "displayName": "SpaceMouse for Unity (Mac)",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "Navigate the Unity Scene view with a 3Dconnexion SpaceMouse on macOS. Talks to the installed 3Dconnexion driver; editor only.",
+  "license": "MIT",
+  "author": { "name": "Kait Harrison", "url": "https://github.com/Kaity-Designer" },
+  "repository": { "type": "git", "url": "https://github.com/Kaity-Designer/spacemouse-unity-mac.git" },
+  "documentationUrl": "https://github.com/Kaity-Designer/spacemouse-unity-mac#readme",
+  "keywords": ["3dconnexion", "spacemouse", "scene view", "navigation", "macos"]
+}
