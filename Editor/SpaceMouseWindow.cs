@@ -53,7 +53,7 @@ namespace Kah.SpaceMouse
             EditorGUILayout.LabelField("Navigation", EditorStyles.boldLabel);
             SpaceMouseSettings.Enabled = EditorGUILayout.Toggle("Enabled", SpaceMouseSettings.Enabled);
             SpaceMouseSettings.Mode = (NavigationMode)EditorGUILayout.EnumPopup(
-                new GUIContent("Mode", "Fly: you are the camera.\nOrbit: you hold the scene and turn it around its pivot."),
+                new GUIContent("Mode", "Walk: push or tilt to walk and step sideways on the level, twist to turn.\nFly: you are the camera and fly where you look.\nOrbit: you hold the scene and turn it around its pivot."),
                 SpaceMouseSettings.Mode);
             SpaceMouseSettings.MoveSpeed = EditorGUILayout.Slider("Move speed", SpaceMouseSettings.MoveSpeed, 0.05f, 10f);
             SpaceMouseSettings.RotateSpeed = EditorGUILayout.Slider("Rotate speed", SpaceMouseSettings.RotateSpeed, 0.05f, 10f);

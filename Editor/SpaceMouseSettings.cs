@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Kah.SpaceMouse
 {
-    public enum NavigationMode { Fly = 0, Orbit = 1 }
+    public enum NavigationMode { Fly = 0, Orbit = 1, Walk = 2 }
 
     // What the camera does, in the order the mapping table uses.
     public enum Channel { MoveRight = 0, MoveUp = 1, MoveForward = 2, LookUp = 3, TurnRight = 4, Roll = 5 }
@@ -33,7 +33,7 @@ namespace Kah.SpaceMouse
 
         public static NavigationMode Mode
         {
-            get => (NavigationMode)EditorPrefs.GetInt(P + "Mode", (int)NavigationMode.Fly);
+            get => (NavigationMode)EditorPrefs.GetInt(P + "Mode", (int)NavigationMode.Walk);
             set => EditorPrefs.SetInt(P + "Mode", (int)value);
         }
 

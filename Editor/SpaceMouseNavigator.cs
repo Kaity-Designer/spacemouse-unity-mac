@@ -164,6 +164,7 @@ namespace Kah.SpaceMouse
             float look = s_Smooth[(int)Channel.LookUp];
             float turn = s_Smooth[(int)Channel.TurnRight];
             float roll = s_Smooth[(int)Channel.Roll];
+            float tiltSide = roll; // sideways tilt, before it is turned into turning below
             // With the horizon locked roll can't happen, so tilting the cap
             // sideways turns left/right instead of doing nothing.
             if (SpaceMouseSettings.LockHorizon) { turn = Mathf.Clamp(turn + roll, -1f, 1f); roll = 0f; }
@@ -185,7 +186,29 @@ namespace Kah.SpaceMouse
 
             bool orbit = SpaceMouseSettings.Mode == NavigationMode.Orbit;
 
-            if (orbit)
+            if (SpaceMouseSettings.Mode == NavigationMode.Walk)
+            {
+                // Game-controller style: pushing or tilting the cap walks you
+                // forward/back and steps sideways on the level, twisting turns,
+                // lifting/pressing goes up/down. You never fly off at an angle.
+                // Pushing the cap forward also tilts it forward; both read positive, so they add.
+                float walkFwd = Mathf.Clamp(fwd + Boost(look), -3f, 3f);
+                float walkSide = Mathf.Clamp(right + Boost(tiltSide), -3f, 3f);
+                float walkTurn = s_Smooth[(int)Channel.TurnRight];
+                float step = 2.5f * SpaceMouseSettings.MoveSpeed * dt; // metres per second at full push
+
+                Vector3 flatFwd = rot * Vector3.forward; flatFwd.y = 0f;
+                if (flatFwd.sqrMagnitude < 1e-4f) { flatFwd = rot * Vector3.up; flatFwd.y = 0f; }
+                flatFwd.Normalize();
+                Vector3 flatRight = Vector3.Cross(Vector3.up, flatFwd);
+
+                Vector3 camPos = pivot - rot * Vector3.forward * dist;
+                camPos += (flatFwd * walkFwd + flatRight * walkSide) * step + Vector3.up * up * step;
+                rot = Level(Quaternion.AngleAxis(walkTurn * degrees, Vector3.up) * rot);
+                pivot = camPos + rot * Vector3.forward * dist;
+                view.LookAtDirect(pivot, rot, size);
+            }
+            else if (orbit)
             {
                 // Object-style: move and turn the scene as if holding it.
                 pivot += rot * new Vector3(right, up, 0f) * move;
@@ -242,17 +265,39 @@ namespace Kah.SpaceMouse
             return Quaternion.LookRotation(f, Vector3.up);
         }
 
-        // Back to Unity's starting view: perspective, looking at the world origin from above and to the side.
+        // Back to a sensible view: the scene's Main Camera if there is one (so you start
+        // where the shot is), otherwise Unity's starting view of the world origin.
         public static void Recenter(SceneView view)
         {
             if (view == null) return;
             view.in2DMode = false;
             view.orthographic = false;
+            var cam = Camera.main;
+            if (cam != null)
+            {
+                view.AlignViewToObject(cam.transform);
+                view.Repaint();
+                return;
+            }
             view.LookAt(Vector3.zero, Quaternion.LookRotation(new Vector3(-1f, -0.7f, -1f)), 10f, false);
             view.Repaint();
         }
 
-        [MenuItem("Tools/SpaceMouse/Recenter Scene View")]
+        [MenuItem("Tools/SpaceMouse/Walk Mode", false, 0)] static void WalkMode() => SetMode(NavigationMode.Walk);
+        [MenuItem("Tools/SpaceMouse/Fly Mode", false, 1)] static void FlyMode() => SetMode(NavigationMode.Fly);
+        [MenuItem("Tools/SpaceMouse/Orbit Mode", false, 2)] static void OrbitMode() => SetMode(NavigationMode.Orbit);
+        [MenuItem("Tools/SpaceMouse/Walk Mode", true)] static bool WalkCheck() { Menu.SetChecked("Tools/SpaceMouse/Walk Mode", SpaceMouseSettings.Mode == NavigationMode.Walk); return true; }
+        [MenuItem("Tools/SpaceMouse/Fly Mode", true)] static bool FlyCheck() { Menu.SetChecked("Tools/SpaceMouse/Fly Mode", SpaceMouseSettings.Mode == NavigationMode.Fly); return true; }
+        [MenuItem("Tools/SpaceMouse/Orbit Mode", true)] static bool OrbitCheck() { Menu.SetChecked("Tools/SpaceMouse/Orbit Mode", SpaceMouseSettings.Mode == NavigationMode.Orbit); return true; }
+
+        static void SetMode(NavigationMode m)
+        {
+            SpaceMouseSettings.Mode = m;
+            var view = SceneView.lastActiveSceneView;
+            if (view != null) view.ShowNotification(new GUIContent("SpaceMouse: " + m + " mode"), 1.2);
+        }
+
+        [MenuItem("Tools/SpaceMouse/Recenter Scene View", false, 20)]
         static void RecenterMenu()
         {
             var view = SceneView.lastActiveSceneView;
@@ -268,7 +313,10 @@ namespace Kah.SpaceMouse
                     if (Selection.activeGameObject != null) view.FrameSelected();
                     break;
                 case ButtonAction.ToggleMode:
-                    SpaceMouseSettings.Mode = SpaceMouseSettings.Mode == NavigationMode.Fly ? NavigationMode.Orbit : NavigationMode.Fly;
+                    // Walk -> Fly -> Orbit -> Walk
+                    SpaceMouseSettings.Mode = SpaceMouseSettings.Mode == NavigationMode.Walk ? NavigationMode.Fly
+                                            : SpaceMouseSettings.Mode == NavigationMode.Fly ? NavigationMode.Orbit
+                                            : NavigationMode.Walk;
                     view.ShowNotification(new GUIContent("SpaceMouse: " + SpaceMouseSettings.Mode + " mode"), 1.2);
                     break;
                 case ButtonAction.ToggleRoll:

@@ -43,11 +43,12 @@ Wireless: the package compiles, loads its native bridge and connects to the
   Overlays menu.
 - **Window > SpaceMouse** opens the panel with speeds, mode and live bars.
   The same settings are under **Unity > Settings > Preferences > SpaceMouse**.
-- Left button: frame the selected object. Right button: switch Fly / Orbit.
-  Both can be changed in the panel.
+- Left button: frame the selected object. Right button: cycle Walk / Fly / Orbit.
+  Both can be changed in the panel. **Tools > SpaceMouse** also has the three modes.
 - Lost in space? **Tools > SpaceMouse > Recenter Scene View** (or the
-  **Recenter Scene view** button in the panel) puts the camera back to Unity's
-  starting view. You can also assign it to a puck button.
+  **Recenter Scene view** button in the panel) puts the Scene view where the
+  scene's Main Camera is, or back to Unity's starting view if there is none.
+  You can also assign it to a puck button.
 - **Back to original settings** at the bottom of the panel resets everything
   to the defaults. You can also assign it to a puck button.
 
@@ -56,7 +57,10 @@ a full push flies across a whole level. **Push boost** in the panel sets how
 much faster a full push is (default 3, 1 = off). Movement eases in over a
 fraction of a second, so a sudden hard push doesn't fling the camera.
 
-**Fly** (default): you are the camera. Push forward to move forward, twist to turn.
+**Walk** (default): like a game controller. Push or tilt the cap forward/back to
+walk, left/right to step sideways, twist to turn, lift/press to go up/down.
+You always move level, so you never fly off at an angle.
+**Fly**: you are the camera. Push forward to move where you look, twist to turn.
 In an orthographic view, pushing forward zooms instead.
 With **Lock horizon** on (the default), tilting the cap sideways turns left/right,
 and tilting forward/back stops short of looking straight up or down.
