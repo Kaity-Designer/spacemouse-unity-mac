@@ -81,11 +81,17 @@ namespace Kah.SpaceMouse
             if (showDebug) DrawRaw();
 
             EditorGUILayout.Space();
-            using (new EditorGUILayout.HorizontalScope())
+            if (GUILayout.Button(new GUIContent("Back to original settings",
+                    "Puts every SpaceMouse setting back to how it was when first installed"), GUILayout.Height(28)))
             {
-                if (GUILayout.Button("Reset mapping")) SpaceMouseSettings.ResetMapping();
-                if (GUILayout.Button("Reset everything")) SpaceMouseSettings.ResetAll();
+                if (EditorUtility.DisplayDialog("Back to original settings?",
+                        "This resets mode, speeds, feel, buttons and axis mapping to the defaults.",
+                        "Reset", "Cancel"))
+                    SpaceMouseSettings.ResetAll();
+                GUIUtility.ExitGUI();
             }
+            if (GUILayout.Button("Reset axis mapping only", EditorStyles.miniButton))
+                SpaceMouseSettings.ResetMapping();
         }
 
         static void DrawStatus()

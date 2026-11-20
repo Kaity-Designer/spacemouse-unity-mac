@@ -41,6 +41,8 @@ Wireless: the package compiles, loads its native bridge and connects to the
   The same settings are under **Unity > Settings > Preferences > SpaceMouse**.
 - Left button: frame the selected object. Right button: switch Fly / Orbit.
   Both can be changed in the panel.
+- **Back to original settings** at the bottom of the panel resets everything
+  to the defaults. You can also assign it to a puck button.
 
 **Fly** (default): you are the camera. Push forward to move forward, twist to turn.
 **Orbit**: you hold the scene. Push and pull to zoom toward the pivot, twist and tilt to turn it.

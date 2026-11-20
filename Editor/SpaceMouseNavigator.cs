@@ -228,6 +228,10 @@ namespace Kah.SpaceMouse
                     SpaceMouseSettings.ZoomSpeed = 1f;
                     view.ShowNotification(new GUIContent("SpaceMouse speeds reset"), 1.2);
                     break;
+                case ButtonAction.OriginalSettings:
+                    SpaceMouseSettings.ResetAll();
+                    view.ShowNotification(new GUIContent("SpaceMouse: back to original settings"), 1.5);
+                    break;
             }
         }
     }
