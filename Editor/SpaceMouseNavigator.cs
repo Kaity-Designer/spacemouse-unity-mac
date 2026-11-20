@@ -89,7 +89,23 @@ namespace Kah.SpaceMouse
             for (int b = 0; b < 2; b++)
                 if ((pressed & (1u << b)) != 0) RunButton(SpaceMouseSettings.Button(b), view);
 
-            if (dt > 0f && HasMotion()) Navigate(view, dt);
+            if (!HasMotion())
+            {
+                // Let go = stop at once; the next push eases in from zero.
+                Array.Clear(s_Smooth, 0, 6);
+                return;
+            }
+            if (dt > 0f) { SmoothChannels(dt); Navigate(view, dt); }
+        }
+
+        // Eases each channel toward the puck over ~0.15 s, so a sudden hard lean
+        // ramps up instead of flinging the camera.
+        static readonly float[] s_Smooth = new float[6];
+
+        static void SmoothChannels(float dt)
+        {
+            float k = 1f - Mathf.Exp(-dt * 12f);
+            for (int c = 0; c < 6; c++) s_Smooth[c] = Mathf.Lerp(s_Smooth[c], Channels[c], k);
         }
 
         static SceneView TargetView()
@@ -142,12 +158,15 @@ namespace Kah.SpaceMouse
 
             // Push harder, go disproportionately faster: a light touch stays precise,
             // a full push covers the whole environment.
-            float right = Boost(Channels[(int)Channel.MoveRight]);
-            float up = Boost(Channels[(int)Channel.MoveUp]);
-            float fwd = Boost(Channels[(int)Channel.MoveForward]);
-            float look = Channels[(int)Channel.LookUp];
-            float turn = Channels[(int)Channel.TurnRight];
-            float roll = SpaceMouseSettings.LockHorizon ? 0f : Channels[(int)Channel.Roll];
+            float right = Boost(s_Smooth[(int)Channel.MoveRight]);
+            float up = Boost(s_Smooth[(int)Channel.MoveUp]);
+            float fwd = Boost(s_Smooth[(int)Channel.MoveForward]);
+            float look = s_Smooth[(int)Channel.LookUp];
+            float turn = s_Smooth[(int)Channel.TurnRight];
+            float roll = s_Smooth[(int)Channel.Roll];
+            // With the horizon locked roll can't happen, so tilting the cap
+            // sideways turns left/right instead of doing nothing.
+            if (SpaceMouseSettings.LockHorizon) { turn = Mathf.Clamp(turn + roll, -1f, 1f); roll = 0f; }
 
             // Speeds scale with how far the camera is from its pivot, so the
             // same push feels right on a tiny prop and on a whole level.
@@ -192,8 +211,9 @@ namespace Kah.SpaceMouse
 
         static float Boost(float v)
         {
+            // Cubic: barely changes normal pushes, only kicks in near full deflection.
             float a = Mathf.Abs(v);
-            return v * (1f + (SpaceMouseSettings.PushBoost - 1f) * a * a);
+            return v * (1f + (SpaceMouseSettings.PushBoost - 1f) * a * a * a);
         }
 
         static Quaternion Rotate(Quaternion rot, float lookUpDeg, float turnRightDeg, float rollDeg)
@@ -202,9 +222,12 @@ namespace Kah.SpaceMouse
             Quaternion r = Quaternion.AngleAxis(turnRightDeg, Vector3.up) * rot;
             Quaternion pitched = r * Quaternion.AngleAxis(-lookUpDeg, Vector3.right);
 
-            // Stop just short of straight up/down so the view never flips over.
+            // Stop well short of straight up/down so the view never flips over.
+            // Only block pitching further toward vertical, so you can always tilt back.
             float tilt = Vector3.Angle(pitched * Vector3.forward, Vector3.up);
-            if (SpaceMouseSettings.LockHorizon && (tilt < 2f || tilt > 178f)) pitched = r;
+            float before = Vector3.Angle(r * Vector3.forward, Vector3.up);
+            if (SpaceMouseSettings.LockHorizon && (tilt < 10f || tilt > 170f) &&
+                Mathf.Abs(tilt - 90f) > Mathf.Abs(before - 90f)) pitched = r;
 
             if (rollDeg != 0f) pitched *= Quaternion.AngleAxis(-rollDeg, Vector3.forward);
             else if (SpaceMouseSettings.LockHorizon) pitched = Level(pitched);

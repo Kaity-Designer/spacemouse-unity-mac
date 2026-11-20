@@ -63,7 +63,7 @@ namespace Kah.SpaceMouse
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Feel", EditorStyles.boldLabel);
-            SpaceMouseSettings.PushBoost = EditorGUILayout.Slider(new GUIContent("Push boost", "How much faster a hard push flies and zooms than a light touch. 1 = off"), SpaceMouseSettings.PushBoost, 1f, 40f);
+            SpaceMouseSettings.PushBoost = EditorGUILayout.Slider(new GUIContent("Push boost", "How much faster a hard push flies and zooms than a light touch. 1 = off"), SpaceMouseSettings.PushBoost, 1f, 20f);
             SpaceMouseSettings.DeadZone =EditorGUILayout.Slider(new GUIContent("Dead zone", "Ignore tiny movements around the centre"), SpaceMouseSettings.DeadZone, 0f, 0.5f);
             SpaceMouseSettings.Curve = EditorGUILayout.Slider(new GUIContent("Response curve", "1 = linear, higher = finer control for light touches"), SpaceMouseSettings.Curve, 1f, 3f);
             SpaceMouseSettings.FullScale = EditorGUILayout.Slider(new GUIContent("Full deflection", "Raw value that counts as a full push"), SpaceMouseSettings.FullScale, 50f, 2000f);

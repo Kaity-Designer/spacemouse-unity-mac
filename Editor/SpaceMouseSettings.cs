@@ -79,8 +79,8 @@ namespace Kah.SpaceMouse
         // 1 = off (speed is just proportional to push), higher = push harder to cross a whole level.
         public static float PushBoost
         {
-            get => EditorPrefs.GetFloat(P + "PushBoost", 8f);
-            set => EditorPrefs.SetFloat(P + "PushBoost", Mathf.Clamp(value, 1f, 40f));
+            get => EditorPrefs.GetFloat(P + "PushBoostV2", 3f);
+            set => EditorPrefs.SetFloat(P + "PushBoostV2", Mathf.Clamp(value, 1f, 20f));
         }
 
         public static bool LockHorizon
@@ -125,7 +125,7 @@ namespace Kah.SpaceMouse
         {
             ResetMapping();
             foreach (var k in new[] { "Enabled", "Mode", "MoveSpeed", "RotateSpeed", "ZoomSpeed", "FullScale",
-                                      "DeadZone", "Curve", "PushBoost", "LockHorizon", "DominantAxis", "Btn0", "Btn1" })
+                                      "DeadZone", "Curve", "PushBoost", "PushBoostV2","LockHorizon", "DominantAxis", "Btn0", "Btn1" })
                 EditorPrefs.DeleteKey(P + k);
         }
     }

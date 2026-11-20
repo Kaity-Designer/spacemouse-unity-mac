@@ -49,10 +49,13 @@ Wireless: the package compiles, loads its native bridge and connects to the
 
 The harder you push, the faster you go: a light touch is slow and precise,
 a full push flies across a whole level. **Push boost** in the panel sets how
-much faster a full push is (1 = off).
+much faster a full push is (default 3, 1 = off). Movement eases in over a
+fraction of a second, so a sudden hard push doesn't fling the camera.
 
 **Fly** (default): you are the camera. Push forward to move forward, twist to turn.
 In an orthographic view, pushing forward zooms instead.
+With **Lock horizon** on (the default), tilting the cap sideways turns left/right,
+and tilting forward/back stops short of looking straight up or down.
 **Orbit**: you hold the scene. Push and pull to zoom toward the pivot, twist and tilt to turn it.
 
 Settings live in EditorPrefs, so they apply to every project.
