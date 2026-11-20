@@ -41,6 +41,9 @@ Wireless: the package compiles, loads its native bridge and connects to the
   The same settings are under **Unity > Settings > Preferences > SpaceMouse**.
 - Left button: frame the selected object. Right button: switch Fly / Orbit.
   Both can be changed in the panel.
+- Lost in space? **Tools > SpaceMouse > Recenter Scene View** (or the
+  **Recenter Scene view** button in the panel) puts the camera back to Unity's
+  starting view. You can also assign it to a puck button.
 - **Back to original settings** at the bottom of the panel resets everything
   to the defaults. You can also assign it to a puck button.
 

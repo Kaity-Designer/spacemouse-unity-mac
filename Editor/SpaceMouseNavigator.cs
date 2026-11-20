@@ -207,6 +207,24 @@ namespace Kah.SpaceMouse
             return Quaternion.LookRotation(f, Vector3.up);
         }
 
+        // Back to Unity's starting view: perspective, looking at the world origin from above and to the side.
+        public static void Recenter(SceneView view)
+        {
+            if (view == null) return;
+            view.in2DMode = false;
+            view.orthographic = false;
+            view.LookAt(Vector3.zero, Quaternion.LookRotation(new Vector3(-1f, -0.7f, -1f)), 10f, false);
+            view.Repaint();
+        }
+
+        [MenuItem("Tools/SpaceMouse/Recenter Scene View")]
+        static void RecenterMenu()
+        {
+            var view = SceneView.lastActiveSceneView;
+            if (view == null && SceneView.sceneViews.Count > 0) view = (SceneView)SceneView.sceneViews[0];
+            Recenter(view);
+        }
+
         static void RunButton(ButtonAction action, SceneView view)
         {
             switch (action)
@@ -227,6 +245,9 @@ namespace Kah.SpaceMouse
                     SpaceMouseSettings.RotateSpeed = 1f;
                     SpaceMouseSettings.ZoomSpeed = 1f;
                     view.ShowNotification(new GUIContent("SpaceMouse speeds reset"), 1.2);
+                    break;
+                case ButtonAction.RecenterView:
+                    Recenter(view);
                     break;
                 case ButtonAction.OriginalSettings:
                     SpaceMouseSettings.ResetAll();

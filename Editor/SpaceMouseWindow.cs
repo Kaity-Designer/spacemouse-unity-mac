@@ -81,6 +81,9 @@ namespace Kah.SpaceMouse
             if (showDebug) DrawRaw();
 
             EditorGUILayout.Space();
+            if (GUILayout.Button(new GUIContent("Recenter Scene view",
+                    "Back to Unity's starting view, looking at the world origin"), GUILayout.Height(28)))
+                EditorApplication.ExecuteMenuItem("Tools/SpaceMouse/Recenter Scene View");
             if (GUILayout.Button(new GUIContent("Back to original settings",
                     "Puts every SpaceMouse setting back to how it was when first installed"), GUILayout.Height(28)))
             {

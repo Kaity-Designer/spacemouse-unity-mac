@@ -9,7 +9,7 @@ namespace Kah.SpaceMouse
     // What the camera does, in the order the mapping table uses.
     public enum Channel { MoveRight = 0, MoveUp = 1, MoveForward = 2, LookUp = 3, TurnRight = 4, Roll = 5 }
 
-    public enum ButtonAction { None = 0, FrameSelected = 1, ToggleMode = 2, ToggleRoll = 3, ResetSpeed = 4, OriginalSettings = 5 }
+    public enum ButtonAction { None = 0, FrameSelected = 1, ToggleMode = 2, ToggleRoll = 3, ResetSpeed = 4, OriginalSettings = 5, RecenterView = 6 }
 
     // Per-user settings, stored in EditorPrefs so they follow you across projects.
     public static class SpaceMouseSettings
